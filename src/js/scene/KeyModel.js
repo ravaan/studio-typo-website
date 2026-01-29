@@ -109,16 +109,18 @@ export class KeyModel {
     ctx.fillRect(0, 0, 256, 256);
 
     // Letter - opposite color for contrast
-    // Use system monospace as fallback since Space Mono may not be loaded yet
+    // Rotate 180 degrees for correct orientation when viewed from top-down camera
+    ctx.save();
+    ctx.translate(128, 128);
+    ctx.rotate(Math.PI);
     ctx.fillStyle = textColor;
     ctx.font = "bold 120px monospace";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(this.letter, 128, 128);
+    ctx.fillText(this.letter, 0, 0);
+    ctx.restore();
 
     const texture = new CanvasTexture(canvas);
-    // Flip texture vertically for correct orientation when viewed from above
-    texture.flipY = false;
 
     // Dispose old texture if exists
     if (this.mesh.material.map) {
