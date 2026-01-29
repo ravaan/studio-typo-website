@@ -109,10 +109,10 @@ export class KeyModel {
     ctx.fillRect(0, 0, 256, 256);
 
     // Letter - opposite color for contrast
-    // Flip both axes for correct orientation when viewed from top-down camera
+    // Mirror horizontally for correct orientation when viewed from top-down camera
     ctx.save();
-    ctx.translate(256, 256);
-    ctx.scale(-1, -1);
+    ctx.translate(256, 0);
+    ctx.scale(-1, 1);
     ctx.fillStyle = textColor;
     ctx.font = "bold 120px monospace";
     ctx.textAlign = "center";
@@ -121,7 +121,6 @@ export class KeyModel {
     ctx.restore();
 
     const texture = new CanvasTexture(canvas);
-    texture.flipY = false;
 
     // Dispose old texture if exists
     if (this.mesh.material.map) {
