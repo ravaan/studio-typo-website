@@ -108,17 +108,12 @@ export class KeyModel {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 256, 256);
 
-    // Letter - opposite color for contrast
-    // Mirror horizontally for correct orientation when viewed from top-down camera
-    ctx.save();
-    ctx.translate(256, 0);
-    ctx.scale(-1, 1);
+    // Letter - opposite color for contrast (no transform needed for top-down view)
     ctx.fillStyle = textColor;
     ctx.font = "bold 120px monospace";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(this.letter, 128, 128);
-    ctx.restore();
 
     const texture = new CanvasTexture(canvas);
 

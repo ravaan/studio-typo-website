@@ -99,6 +99,12 @@ export class App {
       await this.sceneManager.init();
       this.updateProgress(30);
 
+      // Apply saved theme BEFORE creating keyboard (so KeyModels read correct theme)
+      document.documentElement.setAttribute(
+        "data-theme",
+        getTheme(CONFIG.theme.default),
+      );
+
       // Initialize keyboard layout
       this.keyboardLayout = new KeyboardLayout(this.sceneManager.scene);
       await this.keyboardLayout.init();
