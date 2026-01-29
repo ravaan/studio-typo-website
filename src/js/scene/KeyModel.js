@@ -117,9 +117,8 @@ export class KeyModel {
     ctx.fillText(this.letter, 128, 128);
 
     const texture = new CanvasTexture(canvas);
-    // Rotate texture for top-down view (looking from +Y axis)
-    texture.center.set(0.5, 0.5);
-    texture.rotation = Math.PI;
+    // Flip texture vertically for correct orientation when viewed from above
+    texture.flipY = false;
 
     // Dispose old texture if exists
     if (this.mesh.material.map) {
