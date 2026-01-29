@@ -46,11 +46,11 @@ export class KeyModel {
     // Get theme-aware colors
     const keyColor = this.isDarkTheme ? 0xffffff : 0x1a1a1f;
 
-    // PBR material
+    // PBR material - lower metalness to show texture clearly
     const material = new MeshStandardMaterial({
       color: keyColor,
-      metalness: 0.8,
-      roughness: 0.3,
+      metalness: 0.1,
+      roughness: 0.4,
       transparent: !this.isTypoKey,
       opacity: this.isTypoKey ? 1 : 0,
     });
@@ -109,13 +109,17 @@ export class KeyModel {
     ctx.fillRect(0, 0, 256, 256);
 
     // Letter - opposite color for contrast
+    // Use system monospace as fallback since Space Mono may not be loaded yet
     ctx.fillStyle = textColor;
-    ctx.font = 'bold 112px "Space Mono", monospace';
+    ctx.font = "bold 120px monospace";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(this.letter, 128, 128);
 
     const texture = new CanvasTexture(canvas);
+    // Rotate texture for top-down view (looking from +Y axis)
+    texture.center.set(0.5, 0.5);
+    texture.rotation = Math.PI;
 
     // Dispose old texture if exists
     if (this.mesh.material.map) {

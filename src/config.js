@@ -24,22 +24,22 @@ export const CONFIG = {
     keySpacing: 1.2,
     slideDistance: 3.5, // World units to slide right
 
-    // STUDIO row (initially hidden, fade in place)
+    // STUDIO row (initially hidden, fade in place) - horizontal row
     studio: {
-      S: { x: -3.0, y: 0, z: 0 },
-      T: { x: -1.8, y: 0, z: 0 },
-      U: { x: -0.6, y: 0, z: 0 },
-      D: { x: 0.6, y: 0, z: 0 },
-      I: { x: 1.8, y: 0, z: 0 },
-      O: { x: 3.0, y: 0, z: 0 },
+      S: { x: -3.0, y: 0, z: -2.5 },
+      T: { x: -1.8, y: 0, z: -2.5 },
+      U: { x: -0.6, y: 0, z: -2.5 },
+      D: { x: 0.6, y: 0, z: -2.5 },
+      I: { x: 1.8, y: 0, z: -2.5 },
+      O: { x: 3.0, y: 0, z: -2.5 },
     },
 
-    // TYPO grid (initially visible, centered)
+    // TYPO grid (initially visible, 2x2 grid using X and Z)
     typo: {
-      T: { x: -0.6, y: -1.2, z: 0 },
-      Y: { x: 0.6, y: -1.2, z: 0 },
-      P: { x: -0.6, y: -2.4, z: 0 },
-      O: { x: 0.6, y: -2.4, z: 0 },
+      T: { x: -0.6, y: 0, z: -0.6 },
+      Y: { x: 0.6, y: 0, z: -0.6 },
+      P: { x: -0.6, y: 0, z: 0.6 },
+      O: { x: 0.6, y: 0, z: 0.6 },
     },
   },
 

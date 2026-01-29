@@ -11,38 +11,32 @@ export class Lighting {
   }
 
   /**
-   * Set up scene lighting
+   * Set up scene lighting for top-down camera view
    */
   setup() {
-    // Ambient light for base illumination
-    const ambient = new AmbientLight(new Color(0x404050), 0.4);
+    // Strong ambient light for base illumination
+    const ambient = new AmbientLight(new Color(0xffffff), 0.6);
     this.scene.add(ambient);
     this.lights.push(ambient);
 
-    // Main key light (top-front)
-    const keyLight = new DirectionalLight(new Color(0xffffff), 1.0);
-    keyLight.position.set(5, 10, 7);
-    keyLight.castShadow = false; // Shadows disabled for performance
-    this.scene.add(keyLight);
-    this.lights.push(keyLight);
+    // Main top-down light (directly above)
+    const topLight = new DirectionalLight(new Color(0xffffff), 1.5);
+    topLight.position.set(0, 10, 0);
+    topLight.castShadow = false;
+    this.scene.add(topLight);
+    this.lights.push(topLight);
 
-    // Fill light (opposite side, softer)
-    const fillLight = new DirectionalLight(new Color(0x8080ff), 0.3);
-    fillLight.position.set(-5, 5, -5);
+    // Fill light for subtle side illumination
+    const fillLight = new DirectionalLight(new Color(0xffffff), 0.4);
+    fillLight.position.set(5, 8, 5);
     this.scene.add(fillLight);
     this.lights.push(fillLight);
 
-    // Rim light (behind, for edge definition)
-    const rimLight = new DirectionalLight(new Color(0x0080fe), 0.4);
-    rimLight.position.set(0, 5, -10);
-    this.scene.add(rimLight);
-    this.lights.push(rimLight);
-
-    // Accent point light (for subtle highlight)
-    const accentLight = new PointLight(new Color(0x0080fe), 0.5, 20);
-    accentLight.position.set(3, 3, 5);
-    this.scene.add(accentLight);
-    this.lights.push(accentLight);
+    // Secondary fill light (opposite side)
+    const fillLight2 = new DirectionalLight(new Color(0xffffff), 0.3);
+    fillLight2.position.set(-5, 8, -5);
+    this.scene.add(fillLight2);
+    this.lights.push(fillLight2);
   }
 
   /**
