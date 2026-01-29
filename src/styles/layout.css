@@ -61,12 +61,12 @@ body.scrollable {
 /* Minimal Navigation */
 .nav-minimal {
   position: fixed;
-  top: 60px;
+  bottom: 60px;
   left: 60px;
   z-index: var(--z-navigation);
   font-family: var(--font-mono);
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(10px);
   transition:
     opacity var(--duration-normal) var(--ease-out),
     transform var(--duration-normal) var(--ease-out);

@@ -7,7 +7,7 @@
 @media (max-width: 767px) {
   /* Minimal nav adjustments for mobile */
   .nav-minimal {
-    top: 40px;
+    bottom: 40px;
     left: 40px;
   }
 
@@ -51,7 +51,7 @@
 /* Small mobile: < 480px */
 @media (max-width: 479px) {
   .nav-minimal {
-    top: 24px;
+    bottom: 24px;
     left: 24px;
   }
 
@@ -63,7 +63,7 @@
 /* Tablet: 768px - 1023px */
 @media (min-width: 768px) and (max-width: 1023px) {
   .nav-minimal {
-    top: 48px;
+    bottom: 48px;
     left: 48px;
   }
 }
@@ -71,7 +71,7 @@
 /* Large Desktop: >= 1440px */
 @media (min-width: 1440px) {
   .nav-minimal {
-    top: 80px;
+    bottom: 80px;
     left: 80px;
   }
 
@@ -121,7 +121,7 @@
 /* Landscape mobile */
 @media (max-width: 767px) and (orientation: landscape) {
   .nav-minimal {
-    top: 24px;
+    bottom: 24px;
   }
 
   #canvas {
