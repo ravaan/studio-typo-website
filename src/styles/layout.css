@@ -1,0 +1,208 @@
+/**
+ * Layout Styles
+ */
+
+body {
+  overflow: hidden; /* Prevent scroll during intro */
+  position: relative;
+}
+
+/* Enable scrolling after intro */
+body.scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Canvas container */
+#canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh; /* iOS Safari dynamic viewport height */
+  z-index: var(--z-canvas);
+}
+
+/* Loading screen */
+.loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  z-index: var(--z-loading);
+  gap: var(--space-4);
+}
+
+.loading-text {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.loading-progress {
+  width: 120px;
+  height: 2px;
+  background: var(--border-primary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.loading-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+/* Sidebar Navigation */
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 280px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-8);
+  z-index: var(--z-navigation);
+  transform: translateX(-100%);
+  opacity: 0;
+  transition:
+    transform var(--duration-normal) var(--ease-out),
+    opacity var(--duration-normal) var(--ease-out);
+}
+
+.sidebar.visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.nav-item {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.nav-item:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.nav-item.active {
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+/* Sidebar controls (theme/sound toggles) */
+.sidebar-controls {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* Main content area */
+.content {
+  position: fixed;
+  left: 280px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding: var(--space-16) var(--space-12);
+  z-index: var(--z-content);
+  opacity: 0;
+  transform: translateX(20px);
+  transition:
+    opacity var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out);
+}
+
+.content.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Content sections */
+.section {
+  display: none;
+  max-width: 800px;
+}
+
+.section.active {
+  display: block;
+  animation: fadeIn var(--duration-normal) var(--ease-out);
+}
+
+/* Interaction hint */
+.hint {
+  position: fixed;
+  bottom: var(--space-8);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+  z-index: var(--z-hint);
+  pointer-events: none;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+  transition: top var(--duration-fast);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* Hidden utility */
+.hidden {
+  display: none !important;
+}
+
+/* Error message */
+.error-message {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.error-message p {
+  margin-bottom: var(--space-4);
+}
+
+.error-message button {
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.error-message button:hover {
+  background: var(--accent-hover);
+}
