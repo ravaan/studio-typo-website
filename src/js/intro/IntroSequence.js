@@ -95,10 +95,11 @@ export class IntroSequence {
   /**
    * Skip the intro (for accessibility or testing)
    */
-  skip() {
-    if (!this.isPlaying) return;
-
+  async skip() {
     this.isPlaying = false;
+
+    // Initialize audio (needed for key press sounds later)
+    await this.app.audioManager.init();
 
     // Immediately show all keys
     const studioLetters = ["S", "T", "U", "D", "I", "O"];
@@ -117,7 +118,6 @@ export class IntroSequence {
 
     // Show UI
     this.app.navigation.show();
-    this.app.audioManager.stopTypingLoop();
     this.app.onIntroComplete();
   }
 }
