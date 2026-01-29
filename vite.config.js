@@ -28,4 +28,7 @@ export default defineConfig({
       "@": resolve(__dirname, "src"),
     },
   },
+  server: {
+    allowedHosts: ["arpits-macbook-air.local"],
+  },
 });
