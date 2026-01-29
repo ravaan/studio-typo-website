@@ -127,6 +127,15 @@ export class KeyModel {
   }
 
   /**
+   * Set a new letter on this key (updates texture)
+   * @param {string} newLetter - The letter to display
+   */
+  setLetter(newLetter) {
+    this.letter = newLetter;
+    this.applyLetterTexture();
+  }
+
+  /**
    * Update theme colors
    */
   updateTheme(isDark) {

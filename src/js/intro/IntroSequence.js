@@ -10,6 +10,7 @@ export class IntroSequence {
   constructor(app) {
     this.app = app;
     this.isPlaying = false;
+    this.letterRotationAborted = false;
   }
 
   /**
@@ -19,6 +20,13 @@ export class IntroSequence {
   async play(triggeredKey) {
     if (this.isPlaying) return;
     this.isPlaying = true;
+    this.letterRotationAborted = false;
+
+    // Start CARE -> O letter rotation (fire-and-forget, runs in parallel)
+    const oKey = this.app.keyboardLayout.getTypoKey("O");
+    if (oKey) {
+      this.playLetterRotation(oKey);
+    }
 
     const { steps } = CONFIG.intro;
 
@@ -93,10 +101,33 @@ export class IntroSequence {
   }
 
   /**
+   * Play CARE letter rotation on a key
+   * Spells C-A-R-E before settling on O (brand messaging)
+   * @param {KeyModel} keyModel - The key to animate
+   */
+  async playLetterRotation(keyModel) {
+    const letters = ["C", "A", "R", "E", "O"];
+    const intervalMs = 100; // 100ms per letter for readability
+
+    for (const letter of letters) {
+      if (this.letterRotationAborted) break;
+      keyModel.setLetter(letter);
+      await wait(intervalMs);
+    }
+  }
+
+  /**
    * Skip the intro (for accessibility or testing)
    */
   async skip() {
     this.isPlaying = false;
+    this.letterRotationAborted = true;
+
+    // Ensure O key displays "O" (in case rotation was mid-cycle)
+    const oKey = this.app.keyboardLayout.getTypoKey("O");
+    if (oKey) {
+      oKey.setLetter("O");
+    }
 
     // Initialize audio (needed for key press sounds later)
     await this.app.audioManager.init();
