@@ -33,7 +33,7 @@
       }
       body {
         background: #ffffff;
-        color: #000000;
+        color: #0f1114;
         min-height: 100vh;
         min-height: 100dvh;
         overflow: hidden;
@@ -70,7 +70,7 @@
       }
       .loading-progress-bar {
         height: 100%;
-        background: #000000;
+        background: #0f1114;
         width: 0%;
         transition: width 0.3s ease-out;
       }
@@ -224,33 +224,111 @@
     <!-- 3D Canvas -->
     <canvas id="canvas" aria-label="Interactive 3D keyboard scene"></canvas>
 
+    <!-- Site Heading (animates to top-left on nav click) -->
+    <header id="site-heading" class="site-heading">
+      <h1 class="heading-brand">
+        <span class="heading-studio">STUDIO</span>
+        <span class="heading-typo">TYPO</span>
+      </h1>
+      <span id="section-label" class="section-label"></span>
+    </header>
+
+    <!-- Content Container -->
+    <main id="content" class="content-container">
+      <!-- Services Section -->
+      <section id="section-services" class="content-section">
+        <div class="section-inner">
+          <h2 class="section-title">Services</h2>
+          <div class="service-grid">
+            <div class="service-item">
+              <h3>Web Development</h3>
+              <p>
+                Crafting performant, accessible websites that delight users and
+                drive results.
+              </p>
+            </div>
+            <div class="service-item">
+              <h3>Mobile Apps</h3>
+              <p>Native and cross-platform experiences built with precision.</p>
+            </div>
+            <div class="service-item">
+              <h3>Design Systems</h3>
+              <p>Scalable design foundations that grow with your product.</p>
+            </div>
+            <div class="service-item">
+              <h3>Consulting</h3>
+              <p>Strategic guidance to elevate your digital presence.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Who Are We Section -->
+      <section id="section-about" class="content-section">
+        <div class="section-inner">
+          <h2 class="section-title">Who Are We</h2>
+          <p class="about-lead">
+            We are a boutique technology consultancy obsessed with craft.
+          </p>
+          <p class="about-body">
+            Every pixel, every interaction, every line of code matters. We
+            partner with ambitious teams to build digital experiences that feel
+            inevitable—as if they couldn't exist any other way.
+          </p>
+        </div>
+      </section>
+
+      <!-- Work Section -->
+      <section id="section-work" class="content-section">
+        <div class="section-inner">
+          <h2 class="section-title">Selected Work</h2>
+          <div class="work-grid">
+            <article class="work-item">
+              <span class="work-year">2024</span>
+              <h3 class="work-title">Project Alpha</h3>
+              <p class="work-desc">A reimagined e-commerce experience</p>
+            </article>
+            <article class="work-item">
+              <span class="work-year">2024</span>
+              <h3 class="work-title">Project Beta</h3>
+              <p class="work-desc">Enterprise dashboard redesign</p>
+            </article>
+            <article class="work-item">
+              <span class="work-year">2023</span>
+              <h3 class="work-title">Project Gamma</h3>
+              <p class="work-desc">Mobile-first banking app</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Us Section -->
+      <section id="section-contact" class="content-section">
+        <div class="section-inner">
+          <h2 class="section-title">Contact Us</h2>
+          <p class="contact-lead">Let's build something remarkable together.</p>
+          <div class="contact-links">
+            <a href="mailto:hello@studiotypo.com" class="contact-link"
+              >hello@studiotypo.com</a
+            >
+            <a href="#" class="contact-link">Twitter</a>
+            <a href="#" class="contact-link">LinkedIn</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
     <!-- Navigation - Minimal (initially hidden) -->
-    <div
+    <nav
       id="navigation"
       class="nav-minimal hidden"
       aria-label="Main navigation"
     >
-      <div class="nav-section">
-        <span class="nav-label">Services</span>
-        <a href="#" class="nav-link" data-section="services"
-          >Web, Mobile, Design, Consulting</a
-        >
-      </div>
-      <div class="nav-section">
-        <span class="nav-label">About</span>
-        <a href="#" class="nav-link" data-section="about">Studio Typo</a>
-      </div>
-      <div class="nav-section">
-        <span class="nav-label">Work</span>
-        <a href="#" class="nav-link" data-section="work">Selected Projects</a>
-      </div>
-      <div class="nav-section">
-        <span class="nav-label">Contact</span>
-        <a href="#" class="nav-link" data-section="contact"
-          >Email, Twitter, LinkedIn</a
-        >
-      </div>
-    </div>
+      <a href="#" class="nav-link" data-section="services">Services</a>
+      <a href="#" class="nav-link" data-section="work">Work</a>
+      <a href="#" class="nav-link" data-section="about">Who Are We</a>
+      <a href="#" class="nav-link" data-section="contact">Contact Us</a>
+    </nav>
 
     <!-- Toggle controls (bottom-right) -->
     <div id="controls" class="controls-fixed hidden">

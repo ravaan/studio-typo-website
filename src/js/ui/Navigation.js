@@ -8,7 +8,7 @@ export class Navigation {
     this.controlsElement = controlsElement;
     this.onNavigate = onNavigate;
 
-    this.sections = ["services", "about", "work", "contact"];
+    this.sections = ["services", "work", "about", "contact"];
     this.navLinks = [];
 
     this.init();
@@ -51,5 +51,28 @@ export class Navigation {
 
     this.controlsElement?.classList.remove("visible");
     this.controlsElement?.classList.add("hidden");
+  }
+
+  /**
+   * Set active section in navigation
+   */
+  setActive(sectionId) {
+    this.navLinks.forEach((link) => {
+      const linkSection = link.getAttribute("data-section");
+      if (linkSection === sectionId) {
+        link.classList.add("active");
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  /**
+   * Clear active state from all nav items
+   */
+  clearActive() {
+    this.navLinks.forEach((link) => {
+      link.classList.remove("active");
+    });
   }
 }

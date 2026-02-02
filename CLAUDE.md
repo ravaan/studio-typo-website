@@ -1,5 +1,14 @@
 # Studio Typo Website
 
+## Important Notes
+
+**This is a portfolio website - finesse is super important.**
+
+- Every animation should feel smooth and intentional
+- Transitions should be polished, not jarring
+- Pay attention to timing, easing, and micro-interactions
+- When in doubt, err on the side of subtlety
+
 ## Design Tokens
 
 All colors, fonts, and font sizes MUST come from the centralized tokens:

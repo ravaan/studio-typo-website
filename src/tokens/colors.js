@@ -10,9 +10,9 @@ export const hexToThreeColor = (hex) => parseInt(hex.replace("#", ""), 16);
 
 // Base color palette (hex strings for CSS compatibility)
 export const palette = {
-  black: "#000000",
+  black: "#0f1114", // Soft blueish black
   white: "#ffffff",
-  darkGray: "#1a1a1f",
+  darkGray: "#1a1b20", // Blueish dark gray
   blue: "#0080fe",
   lightBlue: "#8080ff",
   gray: {
@@ -21,12 +21,12 @@ export const palette = {
     200: "#eeeeee",
     300: "#cccccc",
     400: "#aaaaaa",
-    500: "#888888",
-    600: "#555555",
-    700: "#3a3a4a",
-    800: "#2a2a3a",
-    900: "#111111",
-    950: "#0a0a0a",
+    500: "#8a8a94", // Slightly blue-tinted
+    600: "#5a5a64", // Slightly blue-tinted
+    700: "#3a3a44",
+    800: "#2a2a34",
+    900: "#16161c",
+    950: "#0c0c10",
   },
 };
 

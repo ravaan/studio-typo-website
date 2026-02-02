@@ -10,6 +10,7 @@ import { IntroSequence } from "./intro/IntroSequence.js";
 import { Navigation } from "./ui/Navigation.js";
 import { ThemeToggle } from "./ui/ThemeToggle.js";
 import { SoundToggle } from "./ui/SoundToggle.js";
+import { PageTransition } from "./ui/PageTransition.js";
 import {
   createKeyboardHandler,
   createTypoTracker,
@@ -56,6 +57,7 @@ export class App {
     this.navigation = null;
     this.themeToggle = null;
     this.soundToggle = null;
+    this.pageTransition = null;
 
     // Input handlers
     this.keyboardHandler = null;
@@ -175,12 +177,23 @@ export class App {
       },
     );
 
-    // Initialize navigation
+    // Initialize navigation first (needed for callback)
     this.navigation = new Navigation(
       document.getElementById("navigation"),
       document.getElementById("controls"),
       (section) => {
+        this.pageTransition.transitionTo(section);
+        this.navigation.setActive(section);
         analytics.trackNavigation(section);
+      },
+    );
+
+    // Initialize page transitions with go-home callback
+    this.pageTransition = new PageTransition(
+      document.getElementById("site-heading"),
+      document.getElementById("content"),
+      () => {
+        this.navigation.clearActive();
       },
     );
   }
@@ -287,8 +300,9 @@ export class App {
         break;
 
       case STATES.MAIN:
-        // Show navigation and content
+        // Show navigation and heading
         this.navigation.show();
+        document.getElementById("site-heading").classList.add("visible");
         break;
     }
   }
