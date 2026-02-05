@@ -64,11 +64,25 @@ export class LiquidMorph extends AsciiArt {
       [...line].forEach((char, col) => {
         const span = document.createElement("span");
         span.className = "liquid-char";
+        
+        // Apply color if available
+        let colorStyle = '';
+        if (this.colors && this.colors[row] && this.colors[row][col]) {
+          const color = this.colors[row][col];
+          const boost = 1.1;
+          const r = Math.min(255, Math.round(color.r * boost));
+          const g = Math.min(255, Math.round(color.g * boost));
+          const b = Math.min(255, Math.round(color.b * boost));
+          colorStyle = `color: rgb(${r},${g},${b});`;
+          span.dataset.originalColor = `rgb(${r},${g},${b})`;
+        }
+        
         span.style.cssText = `
           display: inline-block;
           width: 1ch;
           will-change: transform;
           transition: color 0.3s ease;
+          ${colorStyle}
         `;
         span.textContent = char;
 
@@ -188,12 +202,15 @@ export class LiquidMorph extends AsciiArt {
       const displacement = Math.sqrt(char.x * char.x + char.y * char.y);
       const normalizedDisp = Math.min(displacement / this.amplitude, 1);
 
-      if (normalizedDisp > 0.1) {
-        const hue = 220 + normalizedDisp * 40; // Blue to purple
-        const lightness = 60 + normalizedDisp * 20;
-        char.element.style.color = `hsl(${hue}, 30%, ${lightness}%)`;
-      } else {
-        char.element.style.color = "";
+      // Only apply displacement-based coloring if no original color
+      if (!char.element.dataset.originalColor) {
+        if (normalizedDisp > 0.1) {
+          const hue = 220 + normalizedDisp * 40; // Blue to purple
+          const lightness = 60 + normalizedDisp * 20;
+          char.element.style.color = `hsl(${hue}, 30%, ${lightness}%)`;
+        } else {
+          char.element.style.color = "";
+        }
       }
     });
   }

@@ -30,6 +30,7 @@ export async function loadImage(src) {
  * @param {HTMLCanvasElement} canvas - Source canvas
  * @param {number} cols - Number of columns
  * @param {number} rows - Number of rows
+ * @param {boolean} enhanceContrast - Whether to apply histogram stretching
  * @returns {number[][]} 2D array of brightness values (0-255)
  */
 export function sampleCanvas(canvas, cols, rows, enhanceContrast = true) {
@@ -96,6 +97,101 @@ export function sampleCanvas(canvas, cols, rows, enhanceContrast = true) {
   }
 
   return grid;
+}
+
+/**
+ * Sample both brightness and color from a canvas into grids
+ * @param {HTMLCanvasElement} canvas - Source canvas
+ * @param {number} cols - Number of columns
+ * @param {number} rows - Number of rows
+ * @param {number} gamma - Gamma correction value (default 1.0 = no correction, 2.2 = standard)
+ * @returns {{brightness: number[][], colors: {r: number, g: number, b: number}[][]}} Brightness and color grids
+ */
+export function sampleCanvasWithColor(canvas, cols, rows, gamma = 1.0) {
+  const ctx = canvas.getContext("2d");
+  const cellWidth = canvas.width / cols;
+  const cellHeight = canvas.height / rows;
+
+  const fullImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = fullImageData.data;
+  const imgWidth = canvas.width;
+
+  const brightnessGrid = [];
+  const colorGrid = [];
+  let minBrightness = 255;
+  let maxBrightness = 0;
+
+  for (let y = 0; y < rows; y++) {
+    const brightnessRow = [];
+    const colorRow = [];
+    
+    for (let x = 0; x < cols; x++) {
+      const startX = Math.floor(x * cellWidth);
+      const startY = Math.floor(y * cellHeight);
+      const endX = Math.floor((x + 1) * cellWidth);
+      const endY = Math.floor((y + 1) * cellHeight);
+
+      let totalR = 0, totalG = 0, totalB = 0;
+      let totalBrightness = 0;
+      let sampleCount = 0;
+
+      const stepX = Math.max(1, Math.floor((endX - startX) / 3));
+      const stepY = Math.max(1, Math.floor((endY - startY) / 3));
+
+      for (let sy = startY; sy < endY; sy += stepY) {
+        for (let sx = startX; sx < endX; sx += stepX) {
+          const px = Math.min(sx, canvas.width - 1);
+          const py = Math.min(sy, canvas.height - 1);
+          const idx = (py * imgWidth + px) * 4;
+
+          const r = data[idx];
+          const g = data[idx + 1];
+          const b = data[idx + 2];
+
+          totalR += r;
+          totalG += g;
+          totalB += b;
+          totalBrightness += 0.299 * r + 0.587 * g + 0.114 * b;
+          sampleCount++;
+        }
+      }
+
+      let brightness = totalBrightness / sampleCount;
+      
+      // Apply gamma correction for better mid-tone preservation
+      if (gamma !== 1.0) {
+        brightness = Math.pow(brightness / 255, 1 / gamma) * 255;
+      }
+      
+      brightness = Math.round(brightness);
+      brightnessRow.push(brightness);
+      
+      colorRow.push({
+        r: Math.round(totalR / sampleCount),
+        g: Math.round(totalG / sampleCount),
+        b: Math.round(totalB / sampleCount),
+      });
+
+      if (brightness < minBrightness) minBrightness = brightness;
+      if (brightness > maxBrightness) maxBrightness = brightness;
+    }
+    brightnessGrid.push(brightnessRow);
+    colorGrid.push(colorRow);
+  }
+
+  // Apply contrast enhancement
+  if (maxBrightness > minBrightness) {
+    const range = maxBrightness - minBrightness;
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        brightnessGrid[y][x] = Math.round(
+          ((brightnessGrid[y][x] - minBrightness) / range) * 255
+        );
+      }
+    }
+  }
+
+  return { brightness: brightnessGrid, colors: colorGrid };
 }
 
 /**

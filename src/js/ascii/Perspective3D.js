@@ -71,6 +71,17 @@ export class Perspective3D extends AsciiArt {
         span.textContent = char;
         span.className = "perspective-char";
 
+        // Apply color if available
+        if (this.colors && this.colors[row] && this.colors[row][col]) {
+          const color = this.colors[row][col];
+          const boost = 1.1;
+          const r = Math.min(255, Math.round(color.r * boost));
+          const g = Math.min(255, Math.round(color.g * boost));
+          const b = Math.min(255, Math.round(color.b * boost));
+          span.style.color = `rgb(${r},${g},${b})`;
+          span.dataset.originalColor = `rgb(${r},${g},${b})`;
+        }
+
         // Calculate depth based on distance from center
         const distFromCenter = Math.sqrt(
           Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2),
@@ -202,13 +213,17 @@ export class Perspective3D extends AsciiArt {
           0 0 ${highlight * 10}px rgba(128, 128, 255, ${highlight * 0.5})
         `;
 
-        // Subtle color shift based on depth and rotation
-        const hue = 220 + highlight * 30;
-        const lightness = 60 + highlight * 20;
-        char.element.style.color = `hsl(${hue}, 20%, ${lightness}%)`;
+        // Subtle color shift based on depth and rotation (only if no original color)
+        if (!char.element.dataset.originalColor) {
+          const hue = 220 + highlight * 30;
+          const lightness = 60 + highlight * 20;
+          char.element.style.color = `hsl(${hue}, 20%, ${lightness}%)`;
+        }
       } else {
         char.element.style.textShadow = "";
-        char.element.style.color = "";
+        if (!char.element.dataset.originalColor) {
+          char.element.style.color = "";
+        }
       }
     });
   }

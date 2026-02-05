@@ -3,7 +3,7 @@
  * Maps brightness values (0-255) to ASCII characters
  */
 
-// Dense to sparse character ramp
+// Dense to sparse character ramp - perceptually ordered by visual density
 const DENSITY_RAMP =
   " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
 
@@ -12,6 +12,9 @@ const SIMPLE_RAMP = " .:-=+*#%@";
 
 // Block characters for denser look
 const BLOCK_RAMP = " ░▒▓█";
+
+// Extended ramp with better perceptual ordering for photo conversion
+const PHOTO_RAMP = " `.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
 
 /**
  * Map brightness (0-255) to ASCII character
@@ -25,7 +28,9 @@ export function brightnessToChar(brightness, ramp = "simple") {
       ? DENSITY_RAMP
       : ramp === "block"
         ? BLOCK_RAMP
-        : SIMPLE_RAMP;
+        : ramp === "photo"
+          ? PHOTO_RAMP
+          : SIMPLE_RAMP;
 
   // Invert so dark = dense, light = sparse
   const inverted = 255 - brightness;
@@ -45,7 +50,9 @@ export function charToBrightness(char, ramp = "simple") {
       ? DENSITY_RAMP
       : ramp === "block"
         ? BLOCK_RAMP
-        : SIMPLE_RAMP;
+        : ramp === "photo"
+          ? PHOTO_RAMP
+          : SIMPLE_RAMP;
 
   const index = chars.indexOf(char);
   if (index === -1) return 128; // Default mid-gray
@@ -64,7 +71,9 @@ export function getRamp(ramp = "simple") {
     ? DENSITY_RAMP
     : ramp === "block"
       ? BLOCK_RAMP
-      : SIMPLE_RAMP;
+      : ramp === "photo"
+        ? PHOTO_RAMP
+        : SIMPLE_RAMP;
 }
 
-export { DENSITY_RAMP, SIMPLE_RAMP, BLOCK_RAMP };
+export { DENSITY_RAMP, SIMPLE_RAMP, BLOCK_RAMP, PHOTO_RAMP };

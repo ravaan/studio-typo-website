@@ -5,11 +5,41 @@
 import { AsciiArt } from "./AsciiArt.js";
 
 export class ParticleReform extends AsciiArt {
-  constructor(container, asciiString) {
-    super(container, asciiString);
+  constructor(container, asciiString, options = {}) {
+    super(container, asciiString, options);
     this.particles = [];
     this.isFormed = false;
+    this.revealStartTime = null;
     this.initParticles();
+  }
+
+  /**
+   * Measure actual character dimensions from the container's computed styles
+   */
+  measureCharDimensions() {
+    const pre = this.container.querySelector(".ascii-pre");
+    const referenceElement = pre || this.container;
+    
+    // Create a hidden test element to measure actual character width
+    const testSpan = document.createElement("span");
+    testSpan.textContent = "M"; // Use 'M' as reference (widest char in most fonts)
+    testSpan.style.cssText = `
+      position: absolute;
+      visibility: hidden;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      white-space: pre;
+    `;
+    referenceElement.appendChild(testSpan);
+    
+    const charWidth = testSpan.getBoundingClientRect().width;
+    const charHeight = testSpan.getBoundingClientRect().height;
+    
+    testSpan.remove();
+    
+    return { charWidth, charHeight };
   }
 
   initParticles() {
@@ -21,6 +51,9 @@ export class ParticleReform extends AsciiArt {
       pre.style.position = "relative";
     }
 
+    // Measure actual character dimensions from the container
+    const { charWidth, charHeight } = this.measureCharDimensions();
+
     // Initialize particle positions
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
@@ -30,10 +63,8 @@ export class ParticleReform extends AsciiArt {
         if (!element || char === " ") continue;
 
         // Calculate target position (where char should be)
-        const charWidth = 9.6; // Approximate monospace char width
-        const lineHeight = 14.4; // line-height * font-size
         const targetX = col * charWidth;
-        const targetY = row * lineHeight;
+        const targetY = row * charHeight;
 
         // Random scattered position
         const angle = Math.random() * Math.PI * 2;
@@ -106,8 +137,30 @@ export class ParticleReform extends AsciiArt {
           if (dist < 1) {
             particle.element.classList.add("particle-formed");
           }
-        } else {
+        } else if (!this.isCompleted) {
           particle.element.classList.remove("particle-formed");
+        }
+      }
+
+      // Check if all particles are formed and start reveal timer
+      if (this.isHovered && !this.isCompleted) {
+        const allFormed = this.particles.every(p => {
+          const pdx = p.targetX - p.currentX;
+          const pdy = p.targetY - p.currentY;
+          return Math.sqrt(pdx * pdx + pdy * pdy) < 2;
+        });
+        if (allFormed) {
+          this.isCompleted = true;
+          this.revealStartTime = performance.now();
+        }
+      }
+
+      // Check if we should reveal the image
+      if (this.isCompleted && this.isHovered && this.revealStartTime) {
+        const timeSinceComplete = performance.now() - this.revealStartTime;
+        if (timeSinceComplete > 1000) {
+          this.fadeOutAscii();
+          this.showRevealImage();
         }
       }
 
@@ -122,8 +175,13 @@ export class ParticleReform extends AsciiArt {
   }
 
   onLeave() {
+    // Hide reveal image and show ASCII again
+    this.hideRevealImage();
+    this.fadeInAscii();
+    this.revealStartTime = null;
+
     setTimeout(() => {
-      if (!this.isHovered) {
+      if (!this.isHovered && !this.isCompleted) {
         this.isFormed = false;
 
         // Explode particles

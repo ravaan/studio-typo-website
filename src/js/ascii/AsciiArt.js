@@ -3,7 +3,7 @@
  */
 
 export class AsciiArt {
-  constructor(container, asciiString) {
+  constructor(container, asciiString, options = {}) {
     this.container = container;
     this.asciiString = asciiString;
     this.lines = asciiString.split("\n");
@@ -12,6 +12,9 @@ export class AsciiArt {
     this.elements = [];
     this.isHovered = false;
     this.animationFrame = null;
+    this.colors = options.colors || null;
+    this.revealImage = options.revealImage || null;
+    this.isCompleted = false;
 
     this.init();
   }
@@ -21,6 +24,7 @@ export class AsciiArt {
    */
   init() {
     this.createGrid();
+    this.sizeRevealImage();
     this.setupEvents();
   }
 
@@ -28,7 +32,11 @@ export class AsciiArt {
    * Create grid of span elements for each character
    */
   createGrid() {
-    this.container.innerHTML = "";
+    // Remove existing pre element but preserve other elements (like reveal image)
+    const existingPre = this.container.querySelector(".ascii-pre");
+    if (existingPre) {
+      existingPre.remove();
+    }
 
     const pre = document.createElement("pre");
     pre.className = "ascii-pre";
@@ -45,6 +53,17 @@ export class AsciiArt {
         span.dataset.row = row;
         span.dataset.col = col;
         span.dataset.char = char;
+
+        // Apply color if available
+        if (this.colors && this.colors[row] && this.colors[row][col]) {
+          const color = this.colors[row][col];
+          const boost = 1.1;
+          const r = Math.min(255, Math.round(color.r * boost));
+          const g = Math.min(255, Math.round(color.g * boost));
+          const b = Math.min(255, Math.round(color.b * boost));
+          span.style.color = `rgb(${r},${g},${b})`;
+        }
+
         pre.appendChild(span);
         rowElements.push(span);
       }
@@ -105,6 +124,103 @@ export class AsciiArt {
    * Override in subclass - called on leave
    */
   onLeave() {}
+
+  /**
+   * Show the reveal image (call from subclass when effect completes)
+   */
+  showRevealImage() {
+    if (this.revealImage) {
+      this.revealImage.classList.add("visible");
+    }
+  }
+
+  /**
+   * Hide the reveal image
+   */
+  hideRevealImage() {
+    if (this.revealImage) {
+      this.revealImage.classList.remove("visible");
+    }
+  }
+
+  /**
+   * Measure actual character dimensions from the container's computed styles
+   */
+  measureCharDimensions() {
+    const pre = this.container.querySelector(".ascii-pre");
+    const referenceElement = pre || this.container;
+
+    // Create a hidden test element to measure actual character dimensions
+    const testSpan = document.createElement("span");
+    testSpan.textContent = "M"; // Use 'M' as reference (consistent monospace char)
+    testSpan.style.cssText = `
+      position: absolute;
+      visibility: hidden;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      white-space: pre;
+    `;
+    referenceElement.appendChild(testSpan);
+
+    const charWidth = testSpan.getBoundingClientRect().width;
+    const charHeight = testSpan.getBoundingClientRect().height;
+
+    testSpan.remove();
+
+    return { charWidth, charHeight };
+  }
+
+  /**
+   * Size the reveal image to match the ASCII art dimensions
+   */
+  sizeRevealImage() {
+    if (!this.revealImage) return;
+
+    const pre = this.container.querySelector(".ascii-pre");
+    if (!pre) return;
+
+    // Measure actual character dimensions
+    const { charWidth, charHeight } = this.measureCharDimensions();
+
+    // Calculate exact dimensions based on character grid
+    const width = this.cols * charWidth;
+    const height = this.rows * charHeight;
+
+    // Get the padding from the container (where the pre starts)
+    const containerStyle = getComputedStyle(this.container);
+    const paddingTop = parseFloat(containerStyle.paddingTop) || 0;
+    const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
+
+    // Apply exact dimensions and position to reveal image
+    this.revealImage.style.width = `${width}px`;
+    this.revealImage.style.height = `${height}px`;
+    this.revealImage.style.top = `${paddingTop}px`;
+    this.revealImage.style.left = `${paddingLeft}px`;
+  }
+
+  /**
+   * Fade out all ASCII characters
+   */
+  fadeOutAscii() {
+    const pre = this.container.querySelector(".ascii-pre");
+    if (pre) {
+      pre.style.transition = "opacity 0.5s ease";
+      pre.style.opacity = "0";
+    }
+  }
+
+  /**
+   * Fade in all ASCII characters
+   */
+  fadeInAscii() {
+    const pre = this.container.querySelector(".ascii-pre");
+    if (pre) {
+      pre.style.transition = "opacity 0.3s ease";
+      pre.style.opacity = "1";
+    }
+  }
 
   /**
    * Clean up

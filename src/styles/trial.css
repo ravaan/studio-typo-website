@@ -178,6 +178,46 @@ body {
   cursor: pointer;
 }
 
+/* Toggle switch */
+.setting-toggle {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.setting-toggle input[type="checkbox"] {
+  width: 40px;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-tertiary, #222);
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.setting-toggle input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  background: var(--text-secondary, #888);
+  transition: all 0.2s;
+}
+
+.setting-toggle input[type="checkbox"]:checked {
+  background: var(--accent-primary, #4f9);
+}
+
+.setting-toggle input[type="checkbox"]:checked::before {
+  left: 22px;
+  background: var(--text-primary, #fff);
+}
+
 /* Main content */
 .trial-main {
   display: flex;
@@ -239,12 +279,79 @@ body {
 /* ASCII container inside preview */
 .trial-preview .ascii-art-container {
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
-  line-height: 1.1;
+  font-size: 8px;
+  line-height: 1.0;
+  letter-spacing: 0;
   padding: var(--space-4, 16px);
   white-space: pre;
   overflow: auto;
   height: 100%;
+  position: relative;
+  cursor: pointer;
+  /* Solid background to prevent any bleed-through */
+  background: var(--bg-secondary, #111);
+}
+
+.trial-preview .ascii-art-container:hover {
+  /* Keep background solid on hover */
+  background: var(--bg-secondary, #111);
+}
+
+/* Reveal image (hidden by default, shown on hover after effect completes) */
+.ascii-reveal-image {
+  position: absolute;
+  /* Dimensions and position set by JS to match ASCII art exactly */
+  object-fit: fill; /* Stretch to match ASCII dimensions exactly */
+  opacity: 0;
+  z-index: 2; /* Above the ASCII when visible */
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.ascii-reveal-image.visible {
+  opacity: 1;
+}
+
+/* Colored ASCII */
+.colored-ascii,
+.colored-ascii-base,
+.ascii-pre {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* Allow hover on the container, not the pre */
+.trial-preview .ascii-art-container {
+  pointer-events: auto;
+}
+
+.colored-ascii span {
+  display: inline;
+}
+
+/* Layered colored + effect mode */
+.ascii-art-container.has-colored-base {
+  position: relative;
+}
+
+.ascii-art-container.has-colored-base .colored-ascii-base {
+  position: absolute;
+  top: var(--space-4, 16px);
+  left: var(--space-4, 16px);
+  z-index: 1;
+  opacity: 0.7;
+}
+
+.ascii-art-container.has-colored-base .ascii-effect-layer {
+  position: relative;
+  z-index: 2;
+  mix-blend-mode: overlay;
 }
 
 /* Responsive */

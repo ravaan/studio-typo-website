@@ -7,10 +7,11 @@ import { AsciiArt } from "./AsciiArt.js";
 const GLITCH_CHARS = "!@#$%^&*()_+-=[]{}|;:',.<>?/~`░▒▓█▄▀■□▪▫";
 
 export class GlitchScramble extends AsciiArt {
-  constructor(container, asciiString) {
-    super(container, asciiString);
+  constructor(container, asciiString, options = {}) {
+    super(container, asciiString, options);
     this.charStates = [];
     this.glitchInterval = null;
+    this.revealStartTime = null;
     this.initGlitch();
   }
 
@@ -33,6 +34,12 @@ export class GlitchScramble extends AsciiArt {
 
   startGlitching() {
     const glitch = () => {
+      // Don't glitch at all while hovered - characters should stay revealed
+      if (this.isHovered) {
+        this.animationFrame = requestAnimationFrame(glitch);
+        return;
+      }
+
       const now = performance.now();
 
       for (let row = 0; row < this.rows; row++) {
@@ -42,18 +49,8 @@ export class GlitchScramble extends AsciiArt {
 
           if (originalChar === " ") continue;
 
+          // Skip locked characters (they show the original)
           if (state.locked) {
-            // Occasionally re-glitch even locked chars for effect
-            if (!this.isHovered && Math.random() < 0.01) {
-              const glitchChar =
-                GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
-              this.setChar(row, col, glitchChar);
-              this.getElement(row, col)?.classList.add("glitch-flash");
-              setTimeout(() => {
-                this.setChar(row, col, originalChar);
-                this.getElement(row, col)?.classList.remove("glitch-flash");
-              }, 50);
-            }
             continue;
           }
 
@@ -74,7 +71,20 @@ export class GlitchScramble extends AsciiArt {
   }
 
   onHover() {
-    // Lock in characters with staggered timing
+    // Immediately reveal all characters to their original state
+    // This prevents any glitching from showing through during hover
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.cols; col++) {
+        const originalChar = this.getChar(row, col);
+        if (originalChar === " ") continue;
+        
+        const element = this.getElement(row, col);
+        this.setChar(row, col, originalChar);
+        element?.classList.remove("glitching");
+      }
+    }
+
+    // Lock in characters with staggered timing for visual effect
     const lockOrder = [];
 
     for (let row = 0; row < this.rows; row++) {
@@ -91,7 +101,9 @@ export class GlitchScramble extends AsciiArt {
       [lockOrder[i], lockOrder[j]] = [lockOrder[j], lockOrder[i]];
     }
 
-    // Lock in with stagger
+    // Lock in with stagger (visual effect only, chars already revealed)
+    const totalDuration = lockOrder.length * 15 + 50; // Estimate total lock-in time
+    
     lockOrder.forEach((pos, index) => {
       setTimeout(
         () => {
@@ -102,19 +114,43 @@ export class GlitchScramble extends AsciiArt {
           const element = this.getElement(row, col);
 
           state.locked = true;
-          this.setChar(row, col, this.getChar(row, col));
-          element?.classList.remove("glitching");
           element?.classList.add("locked");
         },
         index * 15 + Math.random() * 30,
       );
     });
+
+    // Mark as completed after all characters are locked in
+    setTimeout(() => {
+      if (this.isHovered) {
+        this.isCompleted = true;
+        this.revealStartTime = performance.now();
+        this.checkForReveal();
+      }
+    }, totalDuration);
+  }
+
+  checkForReveal() {
+    if (!this.isHovered || !this.isCompleted || !this.revealStartTime) return;
+
+    const timeSinceComplete = performance.now() - this.revealStartTime;
+    if (timeSinceComplete > 1000) {
+      this.fadeOutAscii();
+      this.showRevealImage();
+    } else {
+      requestAnimationFrame(() => this.checkForReveal());
+    }
   }
 
   onLeave() {
-    // Unlock all after delay
+    // Hide reveal image and show ASCII again
+    this.hideRevealImage();
+    this.fadeInAscii();
+    this.revealStartTime = null;
+
+    // Unlock all after delay, but only if not completed
     setTimeout(() => {
-      if (!this.isHovered) {
+      if (!this.isHovered && !this.isCompleted) {
         for (let row = 0; row < this.rows; row++) {
           for (let col = 0; col < this.cols; col++) {
             this.charStates[row][col].locked = false;

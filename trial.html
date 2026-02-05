@@ -15,7 +15,7 @@
         >
         <h1>ASCII Art Trial</h1>
         <p>
-          Upload your image and see it transformed with 10 different effects
+          Upload your image and see it transformed with ASCII effects
         </p>
       </header>
 
@@ -40,11 +40,11 @@
                 <input
                   type="range"
                   id="trial-cols"
-                  min="40"
-                  max="150"
-                  value="80"
+                  min="60"
+                  max="200"
+                  value="120"
                 />
-                <span id="trial-cols-value">80</span>
+                <span id="trial-cols-value">120</span>
               </div>
             </div>
 
@@ -52,9 +52,45 @@
               <label for="trial-ramp">Character Ramp</label>
               <select id="trial-ramp">
                 <option value="simple">Simple (10 chars)</option>
-                <option value="full" selected>Full (70 chars)</option>
+                <option value="full">Full (70 chars)</option>
+                <option value="photo" selected>Photo (95 chars)</option>
                 <option value="block">Block (5 chars)</option>
               </select>
+            </div>
+
+            <div class="setting-group">
+              <label for="trial-gamma">Gamma</label>
+              <div class="setting-row">
+                <input
+                  type="range"
+                  id="trial-gamma"
+                  min="1.0"
+                  max="3.0"
+                  step="0.1"
+                  value="1.8"
+                />
+                <span id="trial-gamma-value">1.8</span>
+              </div>
+            </div>
+
+            <div class="setting-group setting-toggle">
+              <label for="trial-color">Colored ASCII</label>
+              <input type="checkbox" id="trial-color" checked />
+            </div>
+
+            <div class="setting-group" id="typewriter-speed-group" style="display: none;">
+              <label for="trial-speed">Typewriter Speed</label>
+              <div class="setting-row">
+                <input
+                  type="range"
+                  id="trial-speed"
+                  min="0.5"
+                  max="500"
+                  step="0.5"
+                  value="1"
+                />
+                <span id="trial-speed-value">1x</span>
+              </div>
             </div>
           </div>
         </div>
@@ -63,16 +99,11 @@
         <div class="trial-main">
           <!-- Effect selector -->
           <div class="trial-effects" id="trial-effects">
-            <button data-effect="matrix" class="active">Matrix</button>
+            <button data-effect="static" class="active">Static</button>
+            <button data-effect="matrix">Matrix</button>
             <button data-effect="typewriter">Typewriter</button>
             <button data-effect="glitch">Glitch</button>
-            <button data-effect="wave">Wave</button>
             <button data-effect="particle">Particle</button>
-            <button data-effect="chromatic">Chromatic</button>
-            <button data-effect="magnetic">Magnetic</button>
-            <button data-effect="holographic">Holographic</button>
-            <button data-effect="liquid">Liquid</button>
-            <button data-effect="perspective">3D</button>
           </div>
 
           <!-- ASCII preview -->

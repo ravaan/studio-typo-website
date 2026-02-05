@@ -5,8 +5,8 @@
 import { AsciiArt } from "./AsciiArt.js";
 
 export class WaveDistortion extends AsciiArt {
-  constructor(container, asciiString) {
-    super(container, asciiString);
+  constructor(container, asciiString, options = {}) {
+    super(container, asciiString, options);
     this.amplitude = 3;
     this.targetAmplitude = 3;
     this.frequency = 0.15;

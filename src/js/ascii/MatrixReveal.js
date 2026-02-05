@@ -8,10 +8,11 @@ const MATRIX_CHARS =
   "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789";
 
 export class MatrixReveal extends AsciiArt {
-  constructor(container, asciiString) {
-    super(container, asciiString);
+  constructor(container, asciiString, options = {}) {
+    super(container, asciiString, options);
     this.columnStates = [];
     this.isRevealed = false;
+    this.revealStartTime = null;
     this.initMatrix();
   }
 
@@ -49,16 +50,7 @@ export class MatrixReveal extends AsciiArt {
     this.startRain();
   }
 
-  onLeave() {
-    // Reset after a delay
-    setTimeout(() => {
-      if (!this.isHovered) {
-        this.isRevealed = false;
-        this.resetColumns();
-        this.scramble();
-      }
-    }, 300);
-  }
+
 
   resetColumns() {
     for (let col = 0; col < this.cols; col++) {
@@ -113,11 +105,47 @@ export class MatrixReveal extends AsciiArt {
         }
       }
 
+      if (allDone) {
+        this.isCompleted = true;
+        // Start reveal timer - after 1 second of completed state, start revealing image
+        if (!this.revealStartTime) {
+          this.revealStartTime = performance.now();
+        }
+      }
+
+      // Check if we should reveal the image (1 second after completion while still hovering)
+      if (this.isCompleted && this.isHovered && this.revealStartTime) {
+        const timeSinceComplete = performance.now() - this.revealStartTime;
+        if (timeSinceComplete > 1000) {
+          this.fadeOutAscii();
+          this.showRevealImage();
+        }
+      }
+
       if (!allDone && this.isHovered) {
+        this.animationFrame = requestAnimationFrame(animate);
+      } else if (this.isHovered) {
+        // Continue animation loop to check for reveal
         this.animationFrame = requestAnimationFrame(animate);
       }
     };
 
     this.animationFrame = requestAnimationFrame(animate);
+  }
+
+  onLeave() {
+    // Hide reveal image and show ASCII again
+    this.hideRevealImage();
+    this.fadeInAscii();
+    this.revealStartTime = null;
+
+    // Reset after a delay if not completed
+    setTimeout(() => {
+      if (!this.isHovered && !this.isCompleted) {
+        this.isRevealed = false;
+        this.resetColumns();
+        this.scramble();
+      }
+    }, 300);
   }
 }

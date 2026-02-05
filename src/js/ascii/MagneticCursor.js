@@ -63,11 +63,25 @@ export class MagneticCursor extends AsciiArt {
         const span = document.createElement("span");
         span.textContent = char;
         span.className = "magnetic-char";
+        
+        // Apply color if available
+        let colorStyle = '';
+        if (this.colors && this.colors[row] && this.colors[row][col]) {
+          const color = this.colors[row][col];
+          const boost = 1.1;
+          const r = Math.min(255, Math.round(color.r * boost));
+          const g = Math.min(255, Math.round(color.g * boost));
+          const b = Math.min(255, Math.round(color.b * boost));
+          colorStyle = `color: rgb(${r},${g},${b});`;
+          span.dataset.originalColor = `rgb(${r},${g},${b})`;
+        }
+        
         span.style.cssText = `
           display: inline-block;
           width: 1ch;
           transition: color 0.3s ease;
           will-change: transform;
+          ${colorStyle}
         `;
 
         // Store character data
@@ -140,12 +154,14 @@ export class MagneticCursor extends AsciiArt {
         char.vx += Math.cos(angle) * force * direction;
         char.vy += Math.sin(angle) * force * direction;
 
-        // Highlight nearby characters
-        const proximity = 1 - dist / this.radius;
-        char.element.style.color = `rgba(128, 128, 255, ${0.5 + proximity * 0.5})`;
+        // Highlight nearby characters (only if no original color)
+        if (!char.element.dataset.originalColor) {
+          const proximity = 1 - dist / this.radius;
+          char.element.style.color = `rgba(128, 128, 255, ${0.5 + proximity * 0.5})`;
+        }
       } else {
         // Return to original color
-        char.element.style.color = "";
+        char.element.style.color = char.element.dataset.originalColor || "";
       }
 
       // Apply damping

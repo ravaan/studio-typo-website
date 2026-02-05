@@ -5,12 +5,15 @@
 import { AsciiArt } from "./AsciiArt.js";
 
 export class TypewriterArt extends AsciiArt {
-  constructor(container, asciiString) {
-    super(container, asciiString);
+  constructor(container, asciiString, options = {}) {
+    super(container, asciiString, options);
     this.currentIndex = 0;
     this.totalChars = this.rows * this.cols;
     this.cursor = null;
     this.isTyping = false;
+    this.revealStartTime = null;
+    // Speed multiplier: 1 = normal, 2 = 2x faster, 0.5 = 2x slower
+    this.speed = options.speed || 1;
     this.initTypewriter();
   }
 
@@ -57,9 +60,14 @@ export class TypewriterArt extends AsciiArt {
   }
 
   onLeave() {
-    // Quick reset
+    // Hide reveal image and show ASCII again
+    this.hideRevealImage();
+    this.fadeInAscii();
+    this.revealStartTime = null;
+
+    // Quick reset only if not completed
     setTimeout(() => {
-      if (!this.isHovered) {
+      if (!this.isHovered && !this.isCompleted) {
         this.isTyping = false;
         this.currentIndex = 0;
         this.cursor?.classList.remove("typing");
@@ -83,8 +91,15 @@ export class TypewriterArt extends AsciiArt {
     const type = () => {
       if (!this.isHovered || this.currentIndex >= this.totalChars) {
         if (this.currentIndex >= this.totalChars) {
+          this.isCompleted = true;
           this.cursor?.classList.remove("typing");
           this.cursor?.classList.add("done");
+          
+          // Start reveal timer
+          if (!this.revealStartTime) {
+            this.revealStartTime = performance.now();
+            this.checkForReveal();
+          }
         }
         return;
       }
@@ -106,11 +121,24 @@ export class TypewriterArt extends AsciiArt {
         this.updateCursorPosition(nextPos.row, nextPos.col);
       }
 
-      // Variable typing speed
-      const delay = char === " " ? 10 : 15 + Math.random() * 25;
+      // Variable typing speed (adjusted by speed multiplier)
+      const baseDelay = char === " " ? 10 : 15 + Math.random() * 25;
+      const delay = baseDelay / this.speed;
       setTimeout(type, delay);
     };
 
     type();
+  }
+
+  checkForReveal() {
+    if (!this.isHovered || !this.isCompleted || !this.revealStartTime) return;
+
+    const timeSinceComplete = performance.now() - this.revealStartTime;
+    if (timeSinceComplete > 1000) {
+      this.fadeOutAscii();
+      this.showRevealImage();
+    } else {
+      requestAnimationFrame(() => this.checkForReveal());
+    }
   }
 }
