@@ -15,6 +15,10 @@ export default defineConfig({
       },
     },
     rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        trial: resolve(__dirname, "trial.html"),
+      },
       output: {
         manualChunks: {
           three: ["three"],

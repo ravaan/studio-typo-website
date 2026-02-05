@@ -312,6 +312,15 @@ body.scrollable {
   max-width: 600px;
 }
 
+.section-inner-wide {
+  max-width: 900px;
+}
+
+.work-intro {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-8);
+}
+
 .section-inner > * + * {
   margin-top: var(--space-4);
 }

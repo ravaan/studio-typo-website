@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASCII Art Trial | Studio Typo</title>
+    <link rel="stylesheet" href="/src/styles/variables.css" />
+    <link rel="stylesheet" href="/src/styles/trial.css" />
+  </head>
+  <body>
+    <main class="trial-page">
+      <header class="trial-header">
+        <a href="/studio-typo-website/" class="back-link"
+          >&larr; Back to Studio Typo</a
+        >
+        <h1>ASCII Art Trial</h1>
+        <p>
+          Upload your image and see it transformed with 10 different effects
+        </p>
+      </header>
+
+      <div class="trial-layout">
+        <!-- Left: Upload zone -->
+        <div class="trial-sidebar">
+          <div class="trial-upload" id="trial-upload">
+            <input type="file" accept="image/*" id="trial-file-input" hidden />
+            <div class="upload-prompt" id="upload-prompt">
+              <div class="upload-icon">+</div>
+              <span>Drop image here</span>
+              <span class="upload-sub">or click to upload</span>
+            </div>
+            <img id="trial-preview-img" class="hidden" alt="Preview" />
+          </div>
+
+          <!-- Settings -->
+          <div class="trial-settings">
+            <div class="setting-group">
+              <label for="trial-cols">Columns</label>
+              <div class="setting-row">
+                <input
+                  type="range"
+                  id="trial-cols"
+                  min="40"
+                  max="150"
+                  value="80"
+                />
+                <span id="trial-cols-value">80</span>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <label for="trial-ramp">Character Ramp</label>
+              <select id="trial-ramp">
+                <option value="simple">Simple (10 chars)</option>
+                <option value="full" selected>Full (70 chars)</option>
+                <option value="block">Block (5 chars)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Preview -->
+        <div class="trial-main">
+          <!-- Effect selector -->
+          <div class="trial-effects" id="trial-effects">
+            <button data-effect="matrix" class="active">Matrix</button>
+            <button data-effect="typewriter">Typewriter</button>
+            <button data-effect="glitch">Glitch</button>
+            <button data-effect="wave">Wave</button>
+            <button data-effect="particle">Particle</button>
+            <button data-effect="chromatic">Chromatic</button>
+            <button data-effect="magnetic">Magnetic</button>
+            <button data-effect="holographic">Holographic</button>
+            <button data-effect="liquid">Liquid</button>
+            <button data-effect="perspective">3D</button>
+          </div>
+
+          <!-- ASCII preview -->
+          <div class="trial-preview" id="trial-preview">
+            <div class="preview-placeholder">
+              <span>Upload an image to see ASCII art</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="/src/js/trial.js"></script>
+  </body>
+</html>
